@@ -1,5 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
-import id from 'date-fns/esm/locale/id/index.js'
+import { createSlice, nanoid } from '@reduxjs/toolkit'
 
 const initialState = [
   { id: '1', title: 'First Post!', content: 'Hello!' },
@@ -10,8 +9,21 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    postAdded: (state, action) => {
-      state.push(action.payload)
+    postAdded: {
+      reducer: (state, action) => {
+        state.push(action.payload)
+      },
+      prepare: (title, content) => {
+        return {
+          payload: {
+            id: nanoid(),
+            title,
+            content,
+            meta: 'Additional information',
+            error: false,
+          },
+        }
+      },
     },
     postUpdated: (state, action) => {
       const { id, title, content } = action.payload
