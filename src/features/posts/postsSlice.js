@@ -7,12 +7,26 @@ const initialState = [
     title: 'First Post!',
     content: 'Hello!',
     date: sub(new Date(), { minutes: 10 }).toISOString(),
+    reactions: {
+      thumbsUp: 1,
+      hooray: 2,
+      heart: 1,
+      rocket: 3,
+      eyes: 2,
+    },
   },
   {
     id: '2',
     title: 'Second Post',
     content: 'More text',
     date: sub(new Date(), { minutes: 5 }).toISOString(),
+    reactions: {
+      thumbsUp: 2,
+      hooray: 3,
+      heart: 1,
+      rocket: 2,
+      eyes: 1,
+    },
   },
 ]
 
@@ -20,6 +34,13 @@ export const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
+    reactionAdded(state, action) {
+      const { postId, reaction } = action.payload
+      const existingPost = state.find((post) => post.id === postId)
+      if (existingPost) {
+        existingPost.reactions[reaction]++
+      }
+    },
     postAdded: {
       reducer: (state, action) => {
         state.push(action.payload)
@@ -49,6 +70,6 @@ export const postsSlice = createSlice({
   },
 })
 
-export const { postAdded, postUpdated } = postsSlice.actions
+export const { reactionAdded, postAdded, postUpdated } = postsSlice.actions
 
 export default postsSlice.reducer
