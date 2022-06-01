@@ -35,8 +35,8 @@ export const postsSlice = createSlice({
             content,
             user: userId,
             date: new Date().toISOString(),
-            meta: 'Additional information',
-            error: false,
+            /*         meta: 'Additional information',
+            error: false, */
           },
         }
       },
