@@ -6,6 +6,27 @@ import postsSlice, { selectAllPosts, fetchPosts } from './postsSlice'
 import { ReactionButtons } from './ReactionButtons'
 import { TimeAgo } from './TimeAgo'
 
+let PostExcerpt = ({ post }) => {
+  return (
+    <article className="post-excerpt" key={post.id}>
+      <h3>{post.title}</h3>
+      <div>
+        <PostAuthor userId={post.user} />
+        <TimeAgo timestamp={post.date} />
+      </div>
+      <p className="post-content">{post.content.substring(0, 100)}</p>
+
+      <ReactionButtons post={post} />
+      <Link to={`/posts/${post.id}`} className="button muted-button">
+        View Post
+      </Link>
+    </article>
+  )
+}
+
+//to avoid unnecessary rendering.
+PostExcerpt = React.memo(PostExcerpt)
+
 export const PostsLists = () => {
   const dispatch = useDispatch()
 
@@ -23,26 +44,20 @@ export const PostsLists = () => {
   if (postStatus === 'loading') {
     content = <div className="loader">Loading...</div>
   } else if (postStatus === 'succeeded') {
+    // Sort posts in reverse chronological order by datetime string
     const orderedPosts = posts
       .slice()
       .sort((a, b) => b.date.localeCompare(a.date))
 
     content = orderedPosts.map((post) => (
-      <article className="post-excerpt" key={post.id}>
-        <h3>{post.title}</h3>
-        <PostAuthor userId={post.user} />
-        <TimeAgo timestamp={post.date} />
-        <p>{post.content.substring(0, 100)}</p>
-        <ReactionButtons post={post} />
-        <Link to={`/posts/${post.id}`} className="button muted-button">
-          View Post
-        </Link>
-      </article>
+      <PostExcerpt key={post.id} post={post} />
     ))
+  } else if (postStatus === 'failed') {
+    content = <div>{error}</div>
   }
 
   return (
-    <section>
+    <section className="posts-list">
       <h2>Posts</h2>
       {content}
     </section>
