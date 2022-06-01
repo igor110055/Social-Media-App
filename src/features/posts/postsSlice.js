@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { client } from '../../api/client'
 
 const initialState = {
@@ -66,3 +66,9 @@ export const selectAllPosts = (state) => state.posts.posts
 
 export const selectPostById = (state, postId) =>
   state.posts.posts.find((post) => post.id === postId)
+
+//Memorized selector (input selector, outpuut selector)
+export const selectPostsByUser = createSelector(
+  [selectAllPosts, (state, userId) => userId],
+  (posts, userId) => posts.filter((post) => post.user === userId)
+)
